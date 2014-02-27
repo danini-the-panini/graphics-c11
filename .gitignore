@@ -1,0 +1,4 @@
+*.o
+main.exe
+main
+makefile.dep
