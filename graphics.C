@@ -23,8 +23,8 @@ int main(void)
     window->background(vec3(1,1,1));
 
     Shader* lighting = (new Shader())
-      ->vertex("pass_vert.glsl")
-      ->geometry("pass_geom.glsl")
+      ->vertex("simple_vert.glsl")
+      // ->geometry("pass_geom.glsl")
       ->fragment("pp_shlighting.glsl")
       ->build();
 

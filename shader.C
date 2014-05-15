@@ -130,9 +130,6 @@ Shader* Shader::build()
   programLog(handle);
 
   use();
-
-  position = findAttribute("position");
-  normal = findAttribute("normal");
   
   return this;
 }
@@ -190,15 +187,6 @@ void Shader::updateVec3Array(const char* name, const vec3* arr, int size)
     }
     glUniform3fv(x, size, floats);
   }
-}
-
-GLint Shader::getPositionLocation()
-{
-  return position;
-}
-GLint Shader::getNormalLocation()
-{
-  return normal;
 }
 
 void Shader::use()

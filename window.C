@@ -22,10 +22,10 @@ static void initGlfw()
   if (!glfwInit())
       exit(EXIT_FAILURE);
 
-  glfwWindowHint (GLFW_CONTEXT_VERSION_MAJOR, 3);
-  glfwWindowHint (GLFW_CONTEXT_VERSION_MINOR, 2);
-  glfwWindowHint (GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-  glfwWindowHint (GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+  // glfwWindowHint (GLFW_CONTEXT_VERSION_MAJOR, 3);
+  // glfwWindowHint (GLFW_CONTEXT_VERSION_MINOR, 2);
+  // glfwWindowHint (GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+  // glfwWindowHint (GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 }
 
 Window::Window(int _width, int _height, const char *title)
@@ -92,16 +92,31 @@ void Window::eachFrame(std::function<void (int, int)> block)
 }
 
 void addLightToSH(vec3 *sharm, Light* light) {
-  vec3 dirn = normalize(-light->getPosition());
-  sharm[0] += light->getColor() * 0.28209479177f;
-  sharm[1] += light->getColor() * -0.4886025119f * dirn.y;
-  sharm[2] += light->getColor() * 0.4886025119f * -dirn.z;
-  sharm[3] += light->getColor() * -0.4886025119f * dirn.x;
-  sharm[4] += light->getColor() * 1.09254843059f * (dirn.x * dirn.y);
-  sharm[5] += light->getColor() * -1.09254843059f * (dirn.y * -dirn.z);
-  sharm[6] += light->getColor() * 0.31539156525f * (3.0f * dirn.z * dirn.z - 1.0f);
-  sharm[7] += light->getColor() * -1.09254843059f * (-dirn.z * dirn.x);
-  sharm[8] += light->getColor() * -0.54627421529f * (dirn.x * dirn.x - dirn.y * dirn.y);
+  vec3 d = normalize(light->getPosition());
+
+  float x2 = d.x * d.x;
+  float y2 = d.y * d.y;
+  float z2 = d.z * d.z;
+
+  sharm[0 ] += light->getColor() * 0.28209479177387f;
+
+  sharm[1 ] += light->getColor() * 0.48860251190291f  * d.y;
+  sharm[2 ] += light->getColor() * 0.48860251190291f  * d.z;
+  sharm[3 ] += light->getColor() * 0.48860251190291f  * d.x;
+
+  sharm[4 ] += light->getColor() * 1.092548430592079f * (d.x * d.y);
+  sharm[5 ] += light->getColor() * 1.092548430592079f * (d.y * d.z);
+  sharm[6 ] += light->getColor() * 0.31539156525252f  * (2.0f * z2 - y2 - x2);
+  sharm[7 ] += light->getColor() * 1.092548430592079f * (d.x * d.z);
+  sharm[8 ] += light->getColor() * 0.54627421529603f  * (x2 - y2);
+
+  sharm[9 ] += light->getColor() * 0.38627420202318f  * (3.0f*x2-y2)*d.y;
+  sharm[10] += light->getColor() * 2.890611442640554f * d.x*d.y*d.z;
+  sharm[11] += light->getColor() * 0.45704579946446f  * d.y*(4.0f*z2-y2-x2);
+  sharm[12] += light->getColor() * 0.37317633259011f  * d.z*(2.0f*z2-3.0f*y2-3.0f*x2);
+  sharm[13] += light->getColor() * 0.45704579946446f  * d.x*(4.0f*z2-y2-x2);
+  sharm[14] += light->getColor() * 1.445305721320277f * (x2-y2)*d.z;
+  sharm[15] += light->getColor() * 0.59004358992664f  * d.x*(x2-3.0f*y2);
 }
 
 void Window::withShader(Shader *shader, std::function<void (Shader*)> block)
@@ -111,7 +126,7 @@ void Window::withShader(Shader *shader, std::function<void (Shader*)> block)
   if (camera) shader->updateMat4("view", camera->getView());
   if (lense) shader->updateMat4("projection", lense->getProjection(ratio));
 
-  for (GLuint i = 0; i < 9; i++)
+  for (GLuint i = 0; i < 16; i++)
     sharm[i] = vec3();
 
   sort(lights.begin(), lights.end(), [](Light* a, Light* b) {
@@ -123,7 +138,7 @@ void Window::withShader(Shader *shader, std::function<void (Shader*)> block)
   for_each (lights.begin()+2, lights.end(), [&](Light* l) {
     addLightToSH(sharm, l);
   });
-  shader->updateVec3Array("sharm",sharm,9);
+  shader->updateVec3Array("sharm",sharm,16);
   // "bright" lights
   vec3 bright_p[2];
   vec3 bright_c[2];

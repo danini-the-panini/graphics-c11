@@ -37,5 +37,5 @@ private:
   int width;
   int height;
   vector<Light*> lights;
-  vec3 sharm[9]; // used for spherical harmonic lighting
+  vec3 sharm[16]; // used for spherical harmonic lighting
 };

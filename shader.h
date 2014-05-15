@@ -5,6 +5,9 @@
 class Shader
 {
 public:
+  static const GLint POSITION_LOC = 1;
+  static const GLint NORMAL_LOC = 2;
+
   static Shader* current();
   static GLuint loadShader(const char* file, GLenum type);
   static void shaderLog(GLuint handle);
@@ -32,18 +35,12 @@ public:
   void updateVec4(const char* name, vec4 v);
   void updateVec3Array(const char* name, const vec3* v, int size);
 
-  GLint getPositionLocation();
-  GLint getNormalLocation();
-
   void use();
 
 private:
   GLuint handle;
   GLuint vert, tc, te, geom, frag, comp;
   static Shader* current_shader;
-
-  GLint position;
-  GLint normal;
 
   map<const char*, GLint> uniforms;
 };

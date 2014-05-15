@@ -1,7 +1,7 @@
-#version 330
+#version 430
 
-in vec3 position;
-in vec3 normal;
+layout (location = 1) in vec3 position;
+layout (location = 2) in vec3 normal;
 
 out vec3 g_normal;
 

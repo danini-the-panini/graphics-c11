@@ -105,15 +105,12 @@ Mesh* Mesh::build()
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, faces.size() * sizeof(GLuint),
           faces.data(), GL_STATIC_DRAW);
 
-  GLint posAttr = Shader::current()->getPositionLocation();
-
-  glEnableVertexAttribArray(posAttr);
-  glVertexAttribPointer(posAttr, POINT_SIZE, GL_FLOAT, GL_FALSE,
+  glEnableVertexAttribArray(Shader::POSITION_LOC);
+  glVertexAttribPointer(Shader::POSITION_LOC, POINT_SIZE, GL_FLOAT, GL_FALSE,
           VERTEX_SIZE * sizeof(float), 0);
 
-  GLint normAttr = Shader::current()->getNormalLocation();
-  glEnableVertexAttribArray(normAttr);
-  glVertexAttribPointer(normAttr, NORMAL_SIZE, GL_FLOAT, GL_FALSE,
+  glEnableVertexAttribArray(Shader::NORMAL_LOC);
+  glVertexAttribPointer(Shader::NORMAL_LOC, NORMAL_SIZE, GL_FLOAT, GL_FALSE,
           VERTEX_SIZE * sizeof(float), (GLvoid*)(POINT_SIZE * sizeof(float)));
 
   return this;
